@@ -26,6 +26,10 @@ This really works well for plugins where the name of the module is
 figured out dynamically anyway, other modules are harder to rename.  But
 it still can be useful there as it's one less thing to change.
 
+=head1 AUTHOR
+
+Darin McBride, C<< <dmcbride at cpan.org> >>
+
 =head1 BUGS
 
 If your @INC has two paths inside each other, stop it.  But if you have to,
@@ -38,11 +42,8 @@ and your module is C</foo/bar/MyModule.pm>, autopackage will think that
 the package name should be C<bar::MyModule> when it's really
 C<MyModule>.  If your @INC is reversed, this bug shouldn't show up.
 
-=head1 AUTHOR
-
-Darin McBride, C<< <dmcbride at cpan.org> >>
-
-=head1 BUGS
+This also probably will break CPAN's indexer.  So it may not be so useful
+for packages you want CPAN to index.
 
 Please report any bugs or feature requests to C<bug-autopackage at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=autopackage>.  I will be notified, and then you'll

@@ -85,9 +85,9 @@ sub import {
 
     # figure out where it got loaded via %INC.
     my $pkg;
-    while (my ($k, $v) = each %INC)
+    for my $k (sort keys %INC)
     {
-        if ($v eq $filename)
+        if ($INC{$k} eq $filename)
         {
             $pkg = $k;
             $pkg =~ s<[/\\]><::>g;

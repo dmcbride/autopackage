@@ -32,16 +32,6 @@ Darin McBride, C<< <dmcbride at cpan.org> >>
 
 =head1 BUGS
 
-If your @INC has two paths inside each other, stop it.  But if you have to,
-this may confuse this module.  It scans your @INC to figure out what to
-eliminate from the filename, and if two paths in @INC overlap, it may
-get this wrong.
-
-For example, if you have @INC with C</foo> and C</foo/bar>, in that order,
-and your module is C</foo/bar/MyModule.pm>, autopackage will think that
-the package name should be C<bar::MyModule> when it's really
-C<MyModule>.  If your @INC is reversed, this bug shouldn't show up.
-
 This also probably will break CPAN's indexer.  So it may not be so useful
 for packages you want CPAN to index.
 
@@ -54,7 +44,6 @@ automatically be notified of progress on your bug as I make changes.
 You can find documentation for this module with the perldoc command.
 
     perldoc autopackage
-
 
 You can also look for information at:
 
@@ -94,13 +83,13 @@ sub import {
     # figure out where we're called from
     my (undef, $filename) = caller(0);
 
-    # figure out where it got loaded in @INC.
+    # figure out where it got loaded via %INC.
     my $pkg;
-    for my $inc (@INC)
+    while (my ($k, $v) = each %INC)
     {
-        if (substr($filename, 0, length($inc)) eq $inc)
+        if ($v eq $filename)
         {
-            $pkg = substr($filename, length($inc)+1);
+            $pkg = $k;
             $pkg =~ s<[/\\]><::>g;
             $pkg =~ s<\.pm$><>i; # can this be uppercase on some platforms?
             last;

@@ -4,7 +4,7 @@ use warnings;
 
 # ABSTRACT: Automatically set your package based on how your module was loaded.
 
-=head1 SYNOPOSIS
+=head1 SYNOPSIS
 
     use autopackage;
 
@@ -86,15 +86,16 @@ L<http://search.cpan.org/dist/autopackage/>
 
 =cut
 
-use Filter::Simple sub {
+use B::Hooks::Parser  0.08   qw();
+use Carp              0      qw(confess);
+
+sub import {
 
     # figure out where we're called from
-    my ($i, $pkg, $filename) = (0);
-    do {
-        ($pkg, $filename) = caller($i++);
-    } while ($pkg =~ /^Filter/);
+    my (undef, $filename) = caller(0);
 
     # figure out where it got loaded in @INC.
+    my $pkg;
     for my $inc (@INC)
     {
         if (substr($filename, 0, length($inc)) eq $inc)
@@ -106,7 +107,10 @@ use Filter::Simple sub {
         }
     }
 
-    s/^/package $pkg;/;
+    confess("autopackage could not determine package for filename '$filename', died")
+        unless defined $pkg;
+
+    B::Hooks::Parser::inject("; package $pkg;");
 };
 
 1;
